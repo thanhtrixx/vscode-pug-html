@@ -1,29 +1,44 @@
-'use strict';
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+'use strict'
+import { commands, ExtensionContext, window } from 'vscode'
+import * as html2pug from 'html2pug'
+const pug = require('pug')
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: ExtensionContext) {
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "pug-html" is now active!');
+	const html2pugDisposable = commands.registerCommand('extension.html2pug', () => {
 
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with  registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
-        // The code you place here will be executed every time your command is executed
+		const editor = window.activeTextEditor
+		if (!editor) {
+			return
+		}
 
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
-    });
+		const selection = editor.selection;
+		const text = editor.document.getText(selection);
 
-    context.subscriptions.push(disposable);
+		if (text.length <= 0) {
+			window.showErrorMessage('Please select HTML which you need to covert to PUG!')
+		}
+
+		html2pug(text)
+			.then(pug => {
+				// window.showInformationMessage(pug)
+				editor.edit((editBuilder) => {
+					const document = editor.document
+					editBuilder.replace(selection, pug)
+				})
+			})
+			.catch(err => {
+				window.showErrorMessage('Error when convert. Please ensure selected HTML validate!')
+			})
+	})
+
+	const pug2htmlDisposable = commands.registerCommand('extension.pug2html', () => {
+		window.showInformationMessage('PUG2HTML')
+	})
+
+
+	context.subscriptions.push(pug2htmlDisposable, html2pugDisposable)
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() {
 }
