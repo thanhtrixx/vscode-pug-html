@@ -31,13 +31,16 @@
 	],
 	"main": "./out/src/extension",
 	"contributes": {
-		"commands": [{
-			"command": "extension.html2pug",
-			"title": "HTML to PUG"
-		}, {
-			"command": "extension.pug2html",
-			"title": "PUG to HTML"
-		}]
+		"commands": [
+			{
+				"command": "extension.html2pug",
+				"title": "HTML to PUG"
+			},
+			{
+				"command": "extension.pug2html",
+				"title": "PUG to HTML"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "tsc -p ./",
@@ -53,7 +56,7 @@
 		"vscode": "^1.0.0"
 	},
 	"dependencies": {
-		"html2pug": "^0.0.1",
+		"html2pug": "https://github.com/thanhtrixx/html2pug",
 		"pug": "^2.0.0-beta6"
 	}
 }
